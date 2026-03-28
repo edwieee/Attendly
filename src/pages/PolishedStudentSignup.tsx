@@ -60,7 +60,7 @@ export default function PolishedStudentSignup() {
       <main className="w-full max-w-[500px] relative z-10 transition-all">
         {/* Branding */}
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-black tracking-[-0.05em] text-primary uppercase">Attendly</h1>
+          <h1 className="text-4xl font-extrabold tracking-[-0.05em] text-slate-800 font-headline">Attendly</h1>
         </div>
 
         {/* Signup Card */}
