@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Student Portal - View Report</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed": "#3e3f45",
+              "surface-container-high": "#e2e9ec",
+              "error-container": "#fe8983",
+              "surface-tint": "#005ac2",
+              "on-secondary-container": "#505157",
+              "surface-container": "#eaeff1",
+              "on-background": "#2b3437",
+              "inverse-primary": "#4d8eff",
+              "surface-container-lowest": "#ffffff",
+              "surface": "#f8f9fa",
+              "on-secondary": "#f9f8ff",
+              "tertiary-fixed": "#d3ceef",
+              "on-primary-fixed-variant": "#0057bd",
+              "inverse-on-surface": "#9b9d9e",
+              "on-error-container": "#752121",
+              "on-error": "#fff7f6",
+              "outline": "#737c7f",
+              "primary-container": "#d8e2ff",
+              "surface-container-low": "#f1f4f6",
+              "primary-fixed-dim": "#c3d4ff",
+              "on-tertiary-fixed-variant": "#504e69",
+              "secondary-dim": "#515359",
+              "secondary-fixed": "#e2e2e9",
+              "on-tertiary-fixed": "#34314b",
+              "error-dim": "#4e0309",
+              "on-primary-container": "#004eaa",
+              "error": "#9f403d",
+              "secondary-fixed-dim": "#d4d4db",
+              "secondary": "#5e5f65",
+              "on-secondary-fixed-variant": "#5a5b61",
+              "primary-dim": "#004fab",
+              "inverse-surface": "#0c0f10",
+              "outline-variant": "#abb3b7",
+              "on-tertiary": "#fcf7ff",
+              "surface-dim": "#d1dce0",
+              "tertiary-dim": "#53506b",
+              "tertiary-container": "#d3ceef",
+              "on-primary": "#f7f7ff",
+              "primary-fixed": "#d8e2ff",
+              "on-surface-variant": "#586064",
+              "tertiary": "#5f5c78",
+              "surface-variant": "#dbe4e7",
+              "on-primary-fixed": "#003c86",
+              "surface-container-highest": "#dbe4e7",
+              "tertiary-fixed-dim": "#c5c0e0",
+              "primary": "#005ac2",
+              "on-surface": "#2b3437",
+              "background": "#f8f9fa",
+              "secondary-container": "#e2e2e9",
+              "on-tertiary-container": "#47445f",
+              "surface-bright": "#f8f9fa"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dbe4e7;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex flex-col h-full p-4 gap-2 bg-[#f1f4f6] dark:bg-slate-900 w-64 rounded-r-lg fixed left-0 top-0 bottom-0 z-40">
+<div class="mb-8 px-2">
+<h1 class="font-['Manrope'] font-black text-[#005ac2] dark:text-blue-500 text-xl">Student Attendance</h1>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Precision Tracking</p>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Dashboard Tab -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#5f5c78] dark:text-slate-500 hover:text-[#005ac2] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<!-- My Attendance Tab -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#5f5c78] dark:text-slate-500 hover:text-[#005ac2] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-medium text-sm">My Attendance</span>
+</a>
+<!-- Reports Tab (ACTIVE) -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-[#005ac2] dark:text-blue-300 rounded-lg shadow-sm font-bold transition-transform duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="analytics" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-medium text-sm">Reports</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/10 pt-4 px-2">
+<div class="flex items-center gap-3 mb-4">
+<img alt="Student User" class="w-10 h-10 rounded-full object-cover" data-alt="portrait of a young college student with a friendly expression in a modern indoor campus setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcWYWEgCxBpUwAT7fXP_FsNypditjbz3_u3hrjEWkwhK24PRMNlg81MQZSRfXYicLKxWB9fAJk__NjG7189ClhmD_lQC1Tubo_pPWZoWXhoUMwEbbi4r-UO8vXEaYPrAnvHieOhah24IVFiD5D4WHad2Qt2_Ht2LaRNa6CC4RxUKRkYEGY9VVQwqt2RM-ScRFAgMSOuxEvISkieHDn2ThPmCpGQluzgLnrPIj1ReMhOuhIFPD2kmuDJedHiVPJIqtN-nwDkURl0wp_"/>
+<div>
+<p class="text-sm font-bold">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Computer Science</p>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-[#5f5c78] dark:text-slate-500 hover:text-[#005ac2] hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-medium text-sm">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Wrapper (Canvas) -->
+<main class="flex-grow md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center w-full px-8 py-3 max-w-full bg-[#f8f9fa] dark:bg-slate-900 sticky top-0 z-30">
+<div class="flex items-center gap-4">
+<span class="font-['Manrope'] font-bold text-lg dark:text-slate-100 text-blue-600">Student Portal</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden sm:flex items-center bg-surface-container-low px-4 py-1.5 rounded-full">
+<span class="material-symbols-outlined text-sm text-outline" data-icon="search">search</span>
+<input class="bg-transparent border-none text-sm focus:ring-0 w-48 text-on-surface" placeholder="Search report data..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="help">help</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Content / Modal Overlay Triggered State -->
+<section class="p-8 flex-grow bg-surface-container-low/30">
+<!-- Context Page (Background behind modal) -->
+<div class="max-w-6xl mx-auto opacity-40 pointer-events-none">
+<h2 class="font-headline text-2xl font-bold mb-6">Academic Year 2023-24</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="h-32 bg-surface-container rounded-xl"></div>
+<div class="h-32 bg-surface-container rounded-xl"></div>
+<div class="h-32 bg-surface-container rounded-xl"></div>
+</div>
+</div>
+<!-- MODAL: VIEW REPORT -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-12">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-on-background/20 backdrop-blur-sm"></div>
+<!-- Modal Content -->
+<div class="relative w-full max-w-4xl bg-surface-container-lowest rounded-xl shadow-2xl flex flex-col max-h-[921px] overflow-hidden">
+<!-- Modal Header -->
+<div class="px-8 py-6 border-b border-outline-variant/10 flex justify-between items-center">
+<div>
+<h2 class="font-headline text-2xl font-extrabold text-primary">Attendance Analytics</h2>
+<p class="font-body text-sm text-on-surface-variant">Detailed summary for Alex Rivera • Student ID: 2024-CS-042</p>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Body (Scrollable) -->
+<div class="p-8 overflow-y-auto custom-scrollbar space-y-8">
+<!-- Top Bento Summary -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Card: Present -->
+<div class="p-6 bg-primary-container/30 rounded-xl flex flex-col justify-between group hover:bg-primary-container/50 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+<span class="text-[10px] font-bold text-on-primary-container uppercase tracking-widest bg-white/50 px-2 py-0.5 rounded-full">Current Term</span>
+</div>
+<div>
+<p class="text-4xl font-headline font-extrabold text-on-primary-container">142</p>
+<p class="text-sm font-medium text-on-primary-container/80">Total Days Present</p>
+</div>
+</div>
+<!-- Card: Absent -->
+<div class="p-6 bg-error-container/10 rounded-xl flex flex-col justify-between group hover:bg-error-container/20 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined" data-icon="cancel">cancel</span>
+</div>
+</div>
+<div>
+<p class="text-4xl font-headline font-extrabold text-on-error-container">08</p>
+<p class="text-sm font-medium text-on-error-container/80">Total Days Absent</p>
+</div>
+</div>
+<!-- Card: Percentage -->
+<div class="p-6 bg-surface-container-highest rounded-xl flex flex-col justify-between group hover:bg-surface-variant transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-lg bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="percent">percent</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-xs font-bold text-primary">+2.4%</span>
+<span class="text-[10px] text-on-surface-variant">vs last month</span>
+</div>
+</div>
+<div>
+<p class="text-4xl font-headline font-extrabold text-on-surface">94.7%</p>
+<p class="text-sm font-medium text-on-surface-variant">Overall Attendance</p>
+</div>
+</div>
+</div>
+<!-- Trend Visualization Section (Line Chart) -->
+<div class="p-8 bg-surface rounded-xl border border-outline-variant/10">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline text-lg font-bold">Attendance Trend</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs font-bold rounded-full bg-white shadow-sm text-primary">6 Months</button>
+<button class="px-3 py-1 text-xs font-medium rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">Yearly</button>
+</div>
+</div>
+<!-- Minimal Line Chart -->
+<div class="relative h-64 w-full">
+<!-- Background grid lines -->
+<div class="absolute inset-x-0 top-0 h-full flex flex-col justify-between py-2">
+<div class="border-t border-outline-variant/10 w-full"></div>
+<div class="border-t border-outline-variant/10 w-full"></div>
+<div class="border-t border-outline-variant/10 w-full"></div>
+<div class="border-t border-outline-variant/10 w-full"></div>
+</div>
+<!-- Chart SVG -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 600 200">
+<!-- Area under curve (optional for depth) -->
+<path d="M 0,160 Q 50,140 100,140 T 200,160 T 300,100 T 400,120 T 500,170 T 600,60 L 600,200 L 0,200 Z" fill="url(#gradient)" opacity="0.05"></path>
+<defs>
+<lineargradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#005ac2"></stop>
+<stop offset="100%" stop-color="#005ac2" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- The Line -->
+<path d="M 0,160 Q 50,140 100,140 T 200,160 T 300,100 T 400,120 T 500,170 T 600,60" fill="none" stroke="#005ac2" stroke-linecap="round" stroke-width="3"></path>
+<!-- Data Points -->
+<circle cx="0" cy="160" fill="#005ac2" r="4"></circle>
+<circle cx="100" cy="140" fill="#005ac2" r="4"></circle>
+<circle cx="200" cy="160" fill="#005ac2" r="4"></circle>
+<circle cx="300" cy="100" fill="#005ac2" r="4"></circle>
+<circle cx="400" cy="120" fill="#005ac2" r="4"></circle>
+<circle cx="500" cy="170" fill="#005ac2" r="4"></circle>
+<circle cx="600" cy="60" fill="#005ac2" r="4"></circle>
+</svg>
+<!-- Monthly Labels -->
+<div class="absolute -bottom-8 left-0 right-0 flex justify-between px-2">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">SEP</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">OCT</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">NOV</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">DEC</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">JAN</span>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">FEB</span>
+</div>
+</div>
+</div>
+<!-- NEW SECTION: Subject-wise Attendance -->
+<div class="space-y-4">
+<h3 class="font-headline text-lg font-bold">Subject-wise Attendance</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Subject 1: Mathematics -->
+<div class="p-4 bg-surface rounded-lg border border-outline-variant/10 flex flex-col gap-3 group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-on-surface">Mathematics</p>
+<span class="text-sm font-extrabold text-primary">92%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-1">
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 70%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 85%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 60%"></div>
+<div class="flex-1 bg-primary rounded-t-sm" style="height: 90%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 75%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 80%"></div>
+</div>
+</div>
+<!-- Subject 2: Computer Science -->
+<div class="p-4 bg-surface rounded-lg border border-outline-variant/10 flex flex-col gap-3 group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-on-surface">Computer Science</p>
+<span class="text-sm font-extrabold text-primary">88%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-1">
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 90%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 80%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 95%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 70%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 85%"></div>
+<div class="flex-1 bg-primary rounded-t-sm" style="height: 88%"></div>
+</div>
+</div>
+<!-- Subject 3: Software Engineering -->
+<div class="p-4 bg-surface rounded-lg border border-outline-variant/10 flex flex-col gap-3 group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-on-surface">Software Engineering</p>
+<span class="text-sm font-extrabold text-primary">96%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-1">
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 100%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 95%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 90%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 95%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 100%"></div>
+<div class="flex-1 bg-primary rounded-t-sm" style="height: 96%"></div>
+</div>
+</div>
+<!-- Subject 4: Data Structures -->
+<div class="p-4 bg-surface rounded-lg border border-outline-variant/10 flex flex-col gap-3 group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-on-surface">Data Structures</p>
+<span class="text-sm font-extrabold text-primary">85%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-1">
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 80%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 70%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 85%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 90%"></div>
+<div class="flex-1 bg-primary/20 rounded-t-sm" style="height: 80%"></div>
+<div class="flex-1 bg-primary rounded-t-sm" style="height: 85%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-6 bg-surface-container-low border-t border-outline-variant/10 flex justify-end items-center gap-4">
+<button class="px-6 py-2.5 text-sm font-bold text-on-surface-variant hover:text-primary transition-all">Cancel</button>
+<button class="px-8 py-2.5 text-sm font-bold bg-primary text-white rounded-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="download">download</span>
+                            Download PDF Report
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>
