@@ -51,6 +51,11 @@ export default function VisuallyEnhancedEmailLogin() {
       </div>
 
       <main className="w-full max-w-[450px] relative z-10 transition-all">
+        {/* Branding */}
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-black tracking-[-0.05em] text-primary uppercase">Attendly</h1>
+        </div>
+
         {/* Login Card */}
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
@@ -156,13 +161,6 @@ export default function VisuallyEnhancedEmailLogin() {
           <Link className="hover:text-primary transition-colors" to="#">Support</Link>
         </div>
       </main>
-
-      <div className="fixed top-8 right-8 hidden md:block">
-        <div className="flex items-center gap-3 bg-surface-container-lowest px-5 py-3 rounded-2xl shadow-xl shadow-on-surface/5 border border-outline-variant/10">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-outline">System Online</span>
-        </div>
-      </div>
     </motion.div>
   );
 }
