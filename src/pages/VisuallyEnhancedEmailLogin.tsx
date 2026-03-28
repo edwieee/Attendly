@@ -7,7 +7,7 @@ export default function VisuallyEnhancedEmailLogin() {
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  
+
   const isConfigMissing = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('your-project');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,7 +16,7 @@ export default function VisuallyEnhancedEmailLogin() {
       setError("Supabase setup required. Please add your credentials to the .env file.");
       return;
     }
-    
+
     const email = (document.getElementById('email') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
 
@@ -57,7 +57,7 @@ export default function VisuallyEnhancedEmailLogin() {
         </div>
 
         {/* Login Card */}
-        <motion.div 
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -92,12 +92,12 @@ export default function VisuallyEnhancedEmailLogin() {
                       alternate_email
                     </span>
                   </div>
-                  <input 
-                    className="w-full pl-14 pr-5 py-4 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/40 font-bold text-sm" 
-                    id="email" 
-                    name="email" 
-                    placeholder="Enter email..." 
-                    required 
+                  <input
+                    className="w-full pl-14 pr-5 py-4 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/40 font-bold text-sm"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email..."
+                    required
                     type="email"
                   />
                 </div>
@@ -118,12 +118,12 @@ export default function VisuallyEnhancedEmailLogin() {
                       lock
                     </span>
                   </div>
-                  <input 
-                    className="w-full pl-14 pr-14 py-4 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/40 font-bold text-sm" 
-                    id="password" 
-                    name="password" 
-                    placeholder="••••••••" 
-                    required 
+                  <input
+                    className="w-full pl-14 pr-14 py-4 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/40 font-bold text-sm"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    required
                     type="password"
                   />
                   <button className="absolute inset-y-0 right-0 pr-5 flex items-center text-outline/40 hover:text-on-surface transition-colors" type="button">
@@ -132,9 +132,9 @@ export default function VisuallyEnhancedEmailLogin() {
                 </div>
               </div>
 
-              <button 
+              <button
                 disabled={loading}
-                className="w-full py-4.5 bg-primary text-on-primary font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dim hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-3 group mt-4" 
+                className="w-full py-4.5 bg-primary text-on-primary font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dim hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-3 group mt-4"
                 type="submit"
               >
                 <span className="text-[15px] uppercase tracking-widest">{loading ? 'Verifying...' : 'Sign In'}</span>
@@ -147,7 +147,7 @@ export default function VisuallyEnhancedEmailLogin() {
 
           <div className="bg-surface-container-low/50 py-8 text-center border-t border-outline-variant/10">
             <p className="text-on-surface-variant text-xs font-bold uppercase tracking-widest">
-              Don't have an account? 
+              Don't have an account?
               <Link className="text-primary font-black ml-2 hover:underline decoration-2 underline-offset-4" to="/signup">
                 Sign Up
               </Link>

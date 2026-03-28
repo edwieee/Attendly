@@ -107,29 +107,29 @@ export default function RefinedStudentAdditionModalWithId() {
       className="w-full h-full"
     >
 
-<div className="flex items-end justify-between mb-10">
-<div>
-<h2 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface">Student Directory</h2>
-<p className="text-on-surface-variant mt-1 font-body">Manage individual student profiles and academic statuses.</p>
+<div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 sm:mb-10 gap-6 sm:gap-0">
+<div className="w-full">
+<h2 className="text-3xl sm:text-4xl font-extrabold font-headline tracking-tight text-on-surface">Student Directory</h2>
+<p className="text-on-surface-variant mt-1 font-body text-sm sm:text-base">Manage individual student profiles and academic statuses.</p>
 </div>
-<button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-bold shadow-sm">
+<button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-bold shadow-sm whitespace-nowrap">
 <span className="material-symbols-outlined" data-icon="person_add">person_add</span>
                 Add Student
             </button>
 </div>
 
 <div className="grid grid-cols-12 gap-4 mb-8">
-<div className="col-span-12 md:col-span-8 bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
-<span className="text-sm font-bold font-headline text-on-surface-variant px-2">FILTERS:</span>
-<div className="flex gap-2">
+<div className="col-span-12 lg:col-span-8 bg-surface-container-low p-3 sm:p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
+<span className="text-xs font-bold font-headline text-on-surface-variant px-2">FILTERS:</span>
+<div className="flex flex-wrap gap-2 w-full sm:w-auto">
 
 {/* Department Filter Dropdown */}
-<div className="relative">
+<div className="relative flex-1 sm:flex-none">
 <button
   onClick={() => { setShowDeptDropdown(!showDeptDropdown); setShowStatusDropdown(false); }}
-  className="px-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-lg text-sm font-medium text-on-surface flex items-center gap-2"
+  className="w-full sm:w-auto px-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-lg text-sm font-medium text-on-surface flex items-center justify-between sm:justify-start gap-2"
 >
-  Department: {deptFilter}
+  Dept: {deptFilter}
   <span className="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
 </button>
 {showDeptDropdown && (
@@ -173,8 +173,8 @@ export default function RefinedStudentAdditionModalWithId() {
 
 </div>
 </div>
-<div className="col-span-12 md:col-span-4 bg-surface-container-low p-4 rounded-xl flex items-center justify-between">
-<p className="text-sm text-on-surface-variant"><span className="font-bold text-on-surface">{filteredStudents.length}</span> Students found</p>
+<div className="col-span-12 lg:col-span-4 bg-surface-container-low p-3 sm:p-4 rounded-xl flex items-center justify-between">
+<p className="text-xs sm:text-sm text-on-surface-variant"><span className="font-bold text-on-surface">{filteredStudents.length}</span> Students found</p>
 <div className="flex gap-1">
 <button className="p-2 bg-surface-container-lowest rounded-lg">
 <span className="material-symbols-outlined" data-icon="grid_view">grid_view</span>
@@ -240,28 +240,28 @@ export default function RefinedStudentAdditionModalWithId() {
 <div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[60] flex items-center justify-center p-6">
 <div className="w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transform animate-in fade-in zoom-in duration-300">
 
-<div className="px-10 py-8 border-b border-surface-container flex items-center justify-between">
+<div className="px-6 py-6 sm:px-10 sm:py-8 border-b border-surface-container flex items-center justify-between">
 <div>
-<h3 className="text-3xl font-extrabold font-headline text-on-surface leading-tight">Add New Student</h3>
-<p className="text-on-surface-variant font-body mt-1">Populate the fields to create a comprehensive academic profile.</p>
+<h3 className="text-2xl sm:text-3xl font-extrabold font-headline text-on-surface leading-tight">Add New Student</h3>
+<p className="text-xs sm:text-sm text-on-surface-variant font-body mt-1">Populate the fields to create a comprehensive academic profile.</p>
 </div>
-<button onClick={() => setIsModalOpen(false)} className="p-2.5 rounded-xl hover:bg-surface-container-low transition-colors text-on-surface-variant hover:text-on-surface">
-<span className="material-symbols-outlined text-2xl" data-icon="close">close</span>
+<button onClick={() => setIsModalOpen(false)} className="p-2 rounded-xl hover:bg-surface-container-low transition-colors text-on-surface-variant hover:text-on-surface">
+<span className="material-symbols-outlined text-xl sm:text-2xl" data-icon="close">close</span>
 </button>
 </div>
 
 <div className="flex-1 overflow-y-auto p-10 space-y-10 hide-scrollbar">
 
-<div className="flex items-center gap-8">
-<div className="w-32 h-32 flex-shrink-0">
+<div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+<div className="w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0">
 <div className="w-full h-full rounded-2xl bg-primary-container/10 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-primary relative group cursor-pointer hover:bg-primary-container/20 transition-all">
-<span className="material-symbols-outlined text-3xl mb-1" data-icon="add_a_photo">add_a_photo</span>
-<span className="text-[9px] font-bold font-headline uppercase tracking-widest text-primary/60">Upload Image</span>
+<span className="material-symbols-outlined text-2xl sm:text-3xl mb-1" data-icon="add_a_photo">add_a_photo</span>
+<span className="text-[8px] sm:text-[9px] font-bold font-headline uppercase tracking-widest text-primary/60">Upload Image</span>
 <div className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 </div>
 </div>
-<div className="flex-1">
-<p className="text-sm text-on-surface-variant font-body leading-relaxed">
+<div className="flex-1 text-center sm:text-left">
+<p className="text-xs sm:text-sm text-on-surface-variant font-body leading-relaxed">
                             Upload a high-resolution identification photo for the student profile.
                         </p>
 </div>
@@ -274,14 +274,14 @@ export default function RefinedStudentAdditionModalWithId() {
 <div className="h-px flex-1 bg-surface-container"></div>
 </div>
 
-<div className="grid grid-cols-2 gap-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div className="space-y-2.5">
 <label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">FIRST NAME</label>
 <input 
   name="firstName"
   value={formData.firstName}
   onChange={handleInputChange}
-  className="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
+  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
   placeholder="e.g. John" 
   type="text"
 />
@@ -292,7 +292,7 @@ export default function RefinedStudentAdditionModalWithId() {
   name="lastName"
   value={formData.lastName}
   onChange={handleInputChange}
-  className="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
+  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
   placeholder="e.g. Doe" 
   type="text"
 />
@@ -300,7 +300,7 @@ export default function RefinedStudentAdditionModalWithId() {
 </div>
 
 
-<div className="grid grid-cols-2 gap-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div className="space-y-2.5">
 <label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">INSTITUTIONAL EMAIL</label>
 <div className="relative">
@@ -309,7 +309,7 @@ export default function RefinedStudentAdditionModalWithId() {
   name="email"
   value={formData.email}
   onChange={handleInputChange}
-  className="w-full pl-12 pr-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
+  className="w-full pl-12 pr-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
   placeholder="j.doe@edu.curator.com" 
   type="email"
 />
@@ -321,7 +321,7 @@ export default function RefinedStudentAdditionModalWithId() {
   name="rollNo"
   value={formData.rollNo}
   onChange={handleInputChange}
-  className="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
+  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
   placeholder="e.g. 2024-0001" 
   type="text"
 />
@@ -335,7 +335,7 @@ export default function RefinedStudentAdditionModalWithId() {
 <span className="text-[10px] font-bold font-headline text-outline tracking-widest uppercase">Academic Context</span>
 <div className="h-px flex-1 bg-surface-container"></div>
 </div>
-<div className="grid grid-cols-2 gap-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 <div className="space-y-2.5">
 <label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">DEPARTMENT</label>
 <div className="relative">
@@ -343,7 +343,7 @@ export default function RefinedStudentAdditionModalWithId() {
   name="department"
   value={formData.department}
   onChange={handleInputChange}
-  className="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body appearance-none"
+  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body appearance-none"
 >
 <option>Computer Science</option>
 <option>Data Science</option>
@@ -359,7 +359,7 @@ export default function RefinedStudentAdditionModalWithId() {
   name="subject"
   value={formData.subject}
   onChange={handleInputChange}
-  className="w-full px-5 py-3.5 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
+  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
   placeholder="e.g. Advanced AI" 
   type="text"
 />
@@ -368,12 +368,12 @@ export default function RefinedStudentAdditionModalWithId() {
 </div>
 </div>
 
-<div className="px-10 py-8 bg-surface-container-low/50 border-t border-surface-container flex items-center justify-end gap-5">
-<button onClick={() => setIsModalOpen(false)} className="px-6 py-3 text-sm font-bold font-headline text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2">
+<div className="px-6 py-6 sm:px-10 sm:py-8 bg-surface-container-low/50 border-t border-surface-container flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-5">
+<button onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto px-6 py-3 text-sm font-bold font-headline text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-2">
 <span className="material-symbols-outlined text-lg" data-icon="history">history</span>
                     Discard Changes
                 </button>
-<button disabled={isLoading} onClick={handleRegister} className={`px-10 py-3.5 bg-primary text-on-primary rounded-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 ${isLoading ? 'opacity-75 cursor-wait' : ''}`}>
+<button disabled={isLoading} onClick={handleRegister} className={`w-full sm:w-auto px-10 py-3.5 bg-primary text-on-primary rounded-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 ${isLoading ? 'opacity-75 cursor-wait' : ''}`}>
 <span className="material-symbols-outlined text-lg" data-icon={isLoading ? "hourglass_empty" : "how_to_reg"}>{isLoading ? 'hourglass_empty' : 'how_to_reg'}</span>
                     {isLoading ? 'Processing...' : 'Register Student'}
                 </button>

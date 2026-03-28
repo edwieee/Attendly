@@ -91,34 +91,34 @@ export default function RefinedMarkAttendanceWithSubject() {
 
 <div className="p-8 max-w-7xl mx-auto lg:px-12">
 
-<div className="flex items-center justify-between mb-8 sticky top-0 bg-white/95 backdrop-blur-sm py-6 z-30 border-b border-slate-50">
+<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sticky top-16 lg:top-0 bg-white/95 backdrop-blur-sm py-4 lg:py-6 z-30 border-b border-slate-50 gap-4 sm:gap-0">
 <div>
-<h2 className="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Mark Attendance</h2>
-<p className="text-on-surface-variant font-label text-sm mt-1">{formatDateLabel(selectedDate)}</p>
+<h2 className="text-2xl sm:text-3xl font-extrabold font-headline tracking-tight text-on-surface">Mark Attendance</h2>
+<p className="text-on-surface-variant font-label text-xs sm:text-sm mt-1">{formatDateLabel(selectedDate)}</p>
 </div>
-<button onClick={handleSave} className="bg-primary hover:bg-primary-dim text-on-primary px-6 py-2.5 rounded-lg font-semibold shadow-sm transition-all flex items-center gap-2 active:scale-95">
+<button onClick={handleSave} className="w-full sm:w-auto bg-primary hover:bg-primary-dim text-on-primary px-6 py-2.5 rounded-lg font-semibold shadow-sm transition-all flex items-center justify-center gap-2 active:scale-95">
 <span className="material-symbols-outlined text-sm" style={{fontVariationSettings:"\"FILL\" 1"}}>save</span>
                     Save Attendance
                 </button>
 </div>
 
-<section className="bg-surface-container rounded-xl p-6 mb-8 flex flex-wrap gap-6 items-end">
-<div className="flex flex-col gap-2">
-<label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant font-label">Select Date</label>
+<section className="bg-surface-container rounded-xl p-5 sm:p-6 mb-8 flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 items-start sm:items-end">
+<div className="flex flex-col gap-2 w-full sm:w-56">
+<label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant font-label">Select Date</label>
 <div className="relative group">
 <span className="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-primary text-xl">calendar_today</span>
 <input
-  className="bg-surface-container-lowest border-none rounded-lg pl-10 pr-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary w-56"
+  className="bg-surface-container-lowest border-none rounded-lg pl-10 pr-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary w-full"
   type="date"
   value={selectedDate}
   onChange={(e) => setSelectedDate(e.target.value)}
 />
 </div>
 </div>
-<div className="flex flex-col gap-2">
-<label className="text-xs font-bold uppercase tracking-wider text-on-surface-variant font-label">Department</label>
+<div className="flex flex-col gap-2 w-full sm:w-64">
+<label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-on-surface-variant font-label">Department</label>
 <select
-  className="bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary w-64 appearance-none"
+  className="bg-surface-container-lowest border-none rounded-lg px-4 py-3 text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary w-full appearance-none"
   value={selectedDept}
   onChange={(e) => setSelectedDept(e.target.value)}
 >
@@ -130,11 +130,11 @@ export default function RefinedMarkAttendanceWithSubject() {
 </section>
 
 <section className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden mb-8">
-<div className="p-6 border-b border-surface-container flex items-center justify-between">
-<h3 className="font-headline font-bold text-lg">Student Roll ({filteredStudents.length} Students)</h3>
-<div className="flex gap-4">
-<button onClick={markAllPresent} className="text-xs font-bold text-primary px-3 py-1.5 rounded-full bg-primary-container/30 hover:bg-primary-container transition-colors">Mark All Present</button>
-<button onClick={() => alert('Exporting Attendance Sheet...')} className="text-xs font-bold text-outline px-3 py-1.5 rounded-full border border-outline-variant hover:bg-surface-container-low transition-colors">Export Sheet</button>
+<div className="p-5 sm:p-6 border-b border-surface-container flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<h3 className="font-headline font-bold text-base sm:text-lg">Student Roll ({filteredStudents.length} Students)</h3>
+<div className="flex gap-2 sm:gap-4 w-full sm:w-auto">
+<button onClick={markAllPresent} className="flex-1 sm:flex-none text-[10px] sm:text-xs font-bold text-primary px-3 py-1.5 rounded-full bg-primary-container/30 hover:bg-primary-container transition-colors">Mark All Present</button>
+<button onClick={() => alert('Exporting Attendance Sheet...')} className="flex-1 sm:flex-none text-[10px] sm:text-xs font-bold text-outline px-3 py-1.5 rounded-full border border-outline-variant hover:bg-surface-container-low transition-colors">Export Sheet</button>
 </div>
 </div>
 <div className="overflow-x-auto">

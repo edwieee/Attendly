@@ -12,7 +12,7 @@ export default function PolishedStudentSignup() {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     const fullName = (document.getElementById('full_name') as HTMLInputElement).value;
     const email = (document.getElementById('email') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
@@ -64,7 +64,7 @@ export default function PolishedStudentSignup() {
         </div>
 
         {/* Signup Card */}
-        <motion.div 
+        <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -91,11 +91,11 @@ export default function PolishedStudentSignup() {
                     <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline/50 group-focus-within:text-primary transition-colors text-lg" style={{ fontVariationSettings: '"wght" 600' }}>
                       person
                     </span>
-                    <input 
-                      className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm" 
-                      id="full_name" 
-                      placeholder="Jane Doe" 
-                      required 
+                    <input
+                      className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm"
+                      id="full_name"
+                      placeholder="Jane Doe"
+                      required
                       type="text"
                     />
                   </div>
@@ -109,11 +109,11 @@ export default function PolishedStudentSignup() {
                     <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline/50 group-focus-within:text-primary transition-colors text-lg" style={{ fontVariationSettings: '"wght" 600' }}>
                       numbers
                     </span>
-                    <input 
-                      className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm" 
-                      id="student_id" 
-                      placeholder="ID-0000" 
-                      required 
+                    <input
+                      className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm"
+                      id="student_id"
+                      placeholder="ID-0000"
+                      required
                       type="text"
                     />
                   </div>
@@ -128,12 +128,12 @@ export default function PolishedStudentSignup() {
                   <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline/50 group-focus-within:text-primary transition-colors text-lg" style={{ fontVariationSettings: '"wght" 600' }}>
                     alternate_email
                   </span>
-                  <input 
-                    className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm" 
-                    id="email" 
-                    name="email" 
-                    placeholder="Enter email address" 
-                    required 
+                  <input
+                    className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email address"
+                    required
                     type="email"
                   />
                 </div>
@@ -147,20 +147,20 @@ export default function PolishedStudentSignup() {
                   <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline/50 group-focus-within:text-primary transition-colors text-lg" style={{ fontVariationSettings: '"wght" 600' }}>
                     lock
                   </span>
-                  <input 
-                    className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm" 
-                    id="password" 
-                    name="password" 
-                    placeholder="••••••••" 
-                    required 
+                  <input
+                    className="w-full pl-14 pr-5 py-3.5 bg-surface-container-low border border-transparent rounded-2xl focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-on-surface placeholder:text-outline/35 font-bold text-sm"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    required
                     type="password"
                   />
                 </div>
               </div>
 
-              <button 
+              <button
                 disabled={loading}
-                className="w-full py-4.5 bg-primary text-on-primary font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dim hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-3 group mt-4 overflow-hidden relative" 
+                className="w-full py-4.5 bg-primary text-on-primary font-bold rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary-dim hover:shadow-2xl active:scale-[0.98] transition-all flex items-center justify-center gap-3 group mt-4 overflow-hidden relative"
                 type="submit"
               >
                 <span className="text-[15px] uppercase tracking-widest relative z-10">{loading ? 'Creating Profile...' : 'Start Your Journey'}</span>
@@ -174,7 +174,7 @@ export default function PolishedStudentSignup() {
 
           <div className="bg-surface-container-low/50 py-8 text-center border-t border-outline-variant/10">
             <p className="text-on-surface-variant text-xs font-bold uppercase tracking-widest">
-              Already a user? 
+              Already a user?
               <Link className="text-primary font-black ml-2 hover:underline decoration-2 underline-offset-4" to="/login">
                 Sign In
               </Link>

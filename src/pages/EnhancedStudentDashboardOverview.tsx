@@ -55,18 +55,17 @@ export default function EnhancedStudentDashboardOverview() {
     >
       <div className="max-w-full mx-auto space-y-8 px-4 lg:px-6">
         {/* Compressed Header - Minimalist approach */}
-        <div className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30 gap-4 sm:gap-0">
           <div className="flex items-center gap-5">
             <div className="w-1.5 h-10 bg-primary rounded-full shadow-lg shadow-primary/20"></div>
             <div>
-              <h2 className="text-3xl font-black tracking-[-0.03em] text-slate-900 leading-none mb-1.5">Overview</h2>
-              <p className="text-slate-400 font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+              <h2 className="text-2xl sm:text-3xl font-black tracking-[-0.03em] text-slate-900 leading-none mb-1.5 font-headline">Overview</h2>
+              <p className="text-slate-400 font-bold text-[10px] sm:text-xs uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1 h-1 bg-primary rounded-full"></span>
                 {formatDate()}
               </p>
             </div>
           </div>
-
         </div>
 
         {/* Proportional Metrics - No Scale Hacks */}
@@ -137,9 +136,9 @@ export default function EnhancedStudentDashboardOverview() {
                 const initials = s.name.split(' ').map((n: string) => n[0]).join('');
                 const color = item.status === 'Present' ? 'emerald' : 'error';
                 return (
-                  <div key={idx} className="px-8 py-5 flex items-center justify-between hover:bg-slate-50/80 transition-all group cursor-default">
+                  <div key={idx} className="px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between hover:bg-slate-50/80 transition-all group cursor-default gap-4 sm:gap-0">
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-500 font-black text-xs border border-slate-100 group-hover:scale-110 transition-transform shadow-sm">
+                      <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-500 font-black text-xs border border-slate-100 group-hover:scale-110 transition-transform shadow-sm flex-shrink-0">
                         {initials}
                       </div>
                       <div>
@@ -147,12 +146,12 @@ export default function EnhancedStudentDashboardOverview() {
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{s.department}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-8">
-                      <div className="text-right">
-                        <p className={`text-base font-black text-slate-900 ${color === 'error' ? 'text-error' : ''}`}>{item.status}</p>
+                    <div className="flex items-center justify-between w-full sm:w-auto gap-8 sm:pl-0 pl-16">
+                      <div className="text-left sm:text-right">
+                        <p className={`text-sm sm:text-base font-black text-slate-900 ${color === 'error' ? 'text-error' : ''}`}>{item.status}</p>
                         <p className="text-[9px] text-slate-400 font-black uppercase leading-none">{new Date(item.date).toLocaleDateString()}</p>
                       </div>
-                      <span className={`w-28 px-4 py-2 ${item.status === 'Present' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'} text-[9px] font-black border rounded-xl uppercase tracking-[0.15em] text-center shadow-sm`}>
+                      <span className={`w-24 sm:w-28 px-4 py-2 ${item.status === 'Present' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-red-50 text-red-600 border-red-100'} text-[9px] font-black border rounded-xl uppercase tracking-[0.15em] text-center shadow-sm`}>
                         Logged
                       </span>
                     </div>
