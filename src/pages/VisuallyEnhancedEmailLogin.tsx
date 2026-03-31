@@ -68,16 +68,7 @@ export default function VisuallyEnhancedEmailLogin() {
 
       <main className="w-full max-w-[500px] relative z-10">
         <div className="mb-12 text-center">
-            <motion.div 
-               initial={{ scale: 0.8, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               className="inline-flex items-center gap-3 px-6 py-2 bg-white/50 backdrop-blur-md rounded-full border border-primary/10 shadow-sm mb-6"
-            >
-               <span className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[12px] text-white font-black">bolt</span>
-               </span>
-               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Attendance Intelligence</span>
-            </motion.div>
+          {/* Badge Removed per Request */}
           <h1 className="text-5xl font-black tracking-[-0.05em] text-on-background font-headline mb-2">Attendly</h1>
           <p className="text-outline font-medium text-sm">Secure Institutional Portal Access</p>
         </div>
