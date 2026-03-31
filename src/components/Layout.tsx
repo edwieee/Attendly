@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 export default function Layout() {
+  const isStudentView = localStorage.getItem('demo_role') === 'student';
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
@@ -18,7 +19,7 @@ export default function Layout() {
         </button>
       </header>
 
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} isStudentView={isStudentView} />
 
       <main className='lg:ml-64 p-5 sm:p-8 lg:p-10 min-h-screen relative pt-20 lg:pt-10'>
         <Outlet />

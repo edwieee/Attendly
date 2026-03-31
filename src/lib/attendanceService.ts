@@ -15,6 +15,13 @@ export interface Student {
   created_at: string;
 }
 
+export interface Profile {
+  id: string;
+  role: 'admin' | 'student';
+  email: string;
+  created_at: string;
+}
+
 export interface AttendanceRecord {
   id?: number;
   student_id: number;
@@ -25,6 +32,17 @@ export interface AttendanceRecord {
 }
 
 export const attendanceService = {
+  // --- Auth & Profile Operations (Bypassed) ---
+  async getProfile() {
+    // Returns a dummy admin profile in bypass mode
+    return {
+       id: 'demo-user',
+       role: 'admin',
+       email: 'demo@example.com',
+       created_at: new Date().toISOString()
+    } as Profile;
+  },
+
   // --- Student Operations ---
   async getStudents() {
     return await supabase
@@ -34,15 +52,9 @@ export const attendanceService = {
   },
 
   async addStudent(student: Partial<Student>) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
-
     return await supabase
       .from('students')
-      .insert([{
-        ...student,
-        user_id: user.id
-      }]);
+      .insert([student]);
   },
 
   async updateStudent(id: number, updates: Partial<Student>) {
@@ -63,7 +75,6 @@ export const attendanceService = {
   async getDashboardStats() {
     const today = new Date().toISOString().split('T')[0];
     
-    // Fetch all needed data in parallel for performance
     const [
       studentResponse,
       attendanceResponse,
@@ -91,17 +102,10 @@ export const attendanceService = {
   },
 
   async saveAttendance(records: Partial<AttendanceRecord>[]) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
-
-    const recordsWithUser = records.map(r => ({
-      ...r,
-      user_id: user.id
-    }));
-
+    // NO Auth check in bypass mode
     return await supabase
       .from('attendance')
-      .upsert(recordsWithUser, { onConflict: 'student_id,date,subject' });
+      .upsert(records, { onConflict: 'student_id,date,subject' });
   },
 
   async getAttendanceByStudent(studentId: number) {

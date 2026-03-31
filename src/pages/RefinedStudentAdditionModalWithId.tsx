@@ -1,392 +1,332 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { attendanceService } from '../lib/attendanceService';
+import { attendanceService, type Student } from '../lib/attendanceService';
+import { supabase } from '../lib/supabase';
 
 export default function RefinedStudentAdditionModalWithId() {
+  // AUTO-DETECT ROLE FOR BYPASS
+  const isStudentView = localStorage.getItem('demo_role') === 'student';
+
   const navigate = useNavigate();
   const [students, setStudents] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [showToast, setShowToast] = useState(false);
-  const [deptFilter, setDeptFilter] = useState('All');
-  const [statusFilter, setStatusFilter] = useState('All');
-  const [showDeptDropdown, setShowDeptDropdown] = useState(false);
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  
-  // Registration Form State
+  const [studentToDelete, setStudentToDelete] = useState<{id: number, name: string} | null>(null);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     rollNo: '',
     department: 'Computer Science',
-    subject: ''
+    subject: 'Computer Science'
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const DEPARTMENTS = ['All', 'Computer Science', 'Mechanical Eng.', 'Business Admin', 'Fine Arts'];
-  const STATUSES = ['All', 'Active', 'Inactive'];
+  const DEPARTMENTS = [
+    'Computer Science',
+    'Mechanical Eng.',
+    'Business Admin',
+    'Fine Arts',
+  ];
 
   const fetchStudents = async () => {
     const { data, error } = await attendanceService.getStudents();
-    if (!error && data) {
-      setStudents(data);
-    }
+    if (!error && data) setStudents(data);
   };
 
   useEffect(() => {
     fetchStudents();
   }, []);
 
-  const filteredStudents = useMemo(() => {
-    return students.filter(s => {
-      const deptMatch = deptFilter === 'All' || s.department === deptFilter;
-      const statusMatch = statusFilter === 'All' || s.status === statusFilter;
-      return deptMatch && statusMatch;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      rollNo: '',
+      department: 'Computer Science',
+      subject: 'Computer Science'
     });
-  }, [students, deptFilter, statusFilter]);
+  };
 
-  const handleRegister = async () => {
-    if (!formData.firstName || !formData.rollNo) {
-      alert('First Name and Student ID are required.');
-      return;
-    }
+  const handleEditClick = (student: any) => {
+    const [first, ...last] = student.name.split(' ');
+    setFormData({
+      firstName: first,
+      lastName: last.join(' '),
+      email: student.email || '',
+      rollNo: student.roll_no,
+      department: student.department || 'Computer Science',
+      subject: student.subject || 'Computer Science'
+    });
+    setEditingStudentId(student.id);
+    setIsModalOpen(true);
+  };
 
-    setIsLoading(true);
-    
-    const name = `${formData.firstName} ${formData.lastName}`.trim();
-    const initials = (formData.firstName?.[0] || '') + (formData.lastName?.[0] || '');
-    
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      const { error } = await attendanceService.addStudent({
-        name,
-        email: formData.email,
-        roll_no: formData.rollNo,
-        department: formData.department,
-        subject: formData.subject || 'General',
-        status: 'Active',
-        initials,
-        avatar_bg: 'bg-indigo-100',
-        avatar_text: 'text-indigo-600'
-      });
-
-      if (!error) {
-        setIsModalOpen(false);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          rollNo: '',
-          department: 'Computer Science',
-          subject: ''
+      if (editingStudentId) {
+        const { error } = await attendanceService.updateStudent(editingStudentId, {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          roll_no: formData.rollNo,
+          department: formData.department,
+          subject: formData.subject,
+          status: 'Active'
         });
-        setShowToast(true);
-        fetchStudents();
-        setTimeout(() => setShowToast(false), 3000);
+        if (error) throw error;
       } else {
-        alert(error.message);
+        const { error } = await attendanceService.addStudent({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          roll_no: formData.rollNo,
+          department: formData.department,
+          subject: formData.subject,
+          status: 'Active',
+          initials: (formData.firstName?.[0] || '') + (formData.lastName?.[0] || ''),
+          avatar_bg: 'bg-indigo-100',
+          avatar_text: 'text-indigo-600'
+        });
+        if (error) throw error;
       }
+
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+        setIsModalOpen(false);
+        setEditingStudentId(null);
+        resetForm();
+        fetchStudents();
+      }, 2000);
     } catch (err: any) {
-      alert(err.message || 'An error occurred during registration.');
-    } finally {
-      setIsLoading(false);
+      alert(err.message);
     }
   };
 
+  const handleDelete = async () => {
+    if (!studentToDelete) return;
+    const { error } = await attendanceService.deleteStudent(studentToDelete.id);
+    if (!error) {
+      setStudentToDelete(null);
+      fetchStudents();
+    } else {
+      alert(error.message);
+    }
+  };
+
+  const filteredStudents = students.filter(s => 
+    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.roll_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (s.email && s.email.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-      className="w-full h-full"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="p-6 sm:p-10 max-w-7xl mx-auto space-y-10"
     >
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-10 gap-6">
+        <div className="w-full">
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-4xl sm:text-5xl font-black font-headline tracking-tighter text-slate-900"
+          >
+            Student Directory
+          </motion.h2>
+        </div>
+        {!isStudentView && (
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { setEditingStudentId(null); setIsModalOpen(true); }} 
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all whitespace-nowrap"
+          >
+            <span className="material-symbols-outlined text-xl">person_add</span>
+            <span>Add Student</span>
+          </motion.button>
+        )}
+      </div>
 
-<div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-8 sm:mb-10 gap-6 sm:gap-0">
-<div className="w-full">
-<h2 className="text-3xl sm:text-4xl font-extrabold font-headline tracking-tight text-on-surface">Student Directory</h2>
-<p className="text-on-surface-variant mt-1 font-body text-sm sm:text-base">Manage individual student profiles and academic statuses.</p>
-</div>
-<button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-primary text-on-primary rounded-lg font-bold shadow-sm whitespace-nowrap">
-<span className="material-symbols-outlined" data-icon="person_add">person_add</span>
-                Add Student
-            </button>
-</div>
+      <div className="glass-card p-2 sm:p-3 rounded-[2rem] border border-slate-200/50 shadow-sm flex flex-col lg:flex-row items-center gap-3 mb-10 overflow-visible">
+        <div className="w-full lg:w-1/3 relative group">
+          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+          <input 
+            type="text" 
+            placeholder="Search by name, ID or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-slate-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/20 transition-all font-medium"
+          />
+        </div>
+      </div>
 
-<div className="grid grid-cols-12 gap-4 mb-8">
-<div className="col-span-12 lg:col-span-8 bg-surface-container-low p-3 sm:p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
-<span className="text-xs font-bold font-headline text-on-surface-variant px-2">FILTERS:</span>
-<div className="flex flex-wrap gap-2 w-full sm:w-auto">
+      <div className="glass-card rounded-[2.5rem] overflow-hidden border border-slate-200/50 shadow-xl shadow-slate-200/20">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50/80">
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Student Identity</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Institutional ID</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Department</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Status</th>
+                {!isStudentView && <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Control</th>}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100/50">
+              {filteredStudents.length === 0 && (
+                <tr>
+                  <td colSpan={isStudentView ? 4 : 5} className="px-8 py-20 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <span className="material-symbols-outlined text-5xl text-slate-200">person_search</span>
+                      <p className="text-slate-400 font-bold text-lg">No matching records found</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {filteredStudents.map((student, idx) => (
+                <motion.tr 
+                  key={student.id} 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.03 }}
+                  className="group hover:bg-primary/5 transition-all cursor-default"
+                >
+                  <td className="px-8 py-5">
+                    <div className="flex items-center gap-5">
+                      <div className="relative">
+                        {student.imgSrc ? (
+                          <img alt={student.name} className="w-12 h-12 rounded-[1.25rem] object-cover border-2 border-white shadow-sm" src={student.imgSrc}/>
+                        ) : (
+                          <div className={`w-12 h-12 rounded-[1.25rem] ${student.avatar_bg} flex items-center justify-center ${student.avatar_text} font-black text-base border-2 border-white shadow-sm ring-1 ring-slate-100`}>
+                            {student.initials}
+                          </div>
+                        )}
+                        <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${student.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
+                      </div>
+                      <div>
+                        <p className="font-black text-slate-900 text-base font-headline">{student.name}</p>
+                        <p className="text-xs font-bold text-slate-400">{student.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-8 py-5">
+                    <code className="text-xs font-black px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg">{student.roll_no}</code>
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className="text-sm font-bold text-slate-600">{student.department}</span>
+                  </td>
+                  <td className="px-8 py-5">
+                    <span className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider ${student.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100/50' : 'bg-slate-50 text-slate-500 border border-slate-100'}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${student.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                      {student.status}
+                    </span>
+                  </td>
+                  {!isStudentView && (
+                    <td className="px-8 py-5 text-right">
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                        <button 
+                          onClick={() => handleEditClick(student)}
+                          title="Edit Student" 
+                          className="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:shadow-lg hover:shadow-primary/10 rounded-xl transition-all"
+                        >
+                          <span className="material-symbols-outlined text-lg">edit</span>
+                        </button>
+                        <button 
+                          onClick={() => setStudentToDelete({ id: student.id, name: student.name })}
+                          title="Delete" 
+                          className="w-10 h-10 flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-error hover:border-error/20 hover:shadow-lg hover:shadow-error/10 rounded-xl transition-all"
+                        >
+                          <span className="material-symbols-outlined text-lg">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  )}
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-{/* Department Filter Dropdown */}
-<div className="relative flex-1 sm:flex-none">
-<button
-  onClick={() => { setShowDeptDropdown(!showDeptDropdown); setShowStatusDropdown(false); }}
-  className="w-full sm:w-auto px-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-lg text-sm font-medium text-on-surface flex items-center justify-between sm:justify-start gap-2"
->
-  Dept: {deptFilter}
-  <span className="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
-</button>
-{showDeptDropdown && (
-  <div className="absolute top-full left-0 mt-1 w-52 bg-surface-container-lowest rounded-lg shadow-xl border border-outline-variant/20 z-50 py-1 overflow-hidden">
-    {DEPARTMENTS.map(d => (
-      <button
-        key={d}
-        onClick={() => { setDeptFilter(d); setShowDeptDropdown(false); }}
-        className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${deptFilter === d ? 'bg-primary-container text-primary font-bold' : 'text-on-surface hover:bg-surface-container-low'}`}
-      >
-        {d}
-      </button>
-    ))}
-  </div>
-)}
-</div>
-
-{/* Status Filter Dropdown */}
-<div className="relative">
-<button
-  onClick={() => { setShowStatusDropdown(!showStatusDropdown); setShowDeptDropdown(false); }}
-  className="px-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-lg text-sm font-medium text-on-surface flex items-center gap-2"
->
-  Status: {statusFilter}
-  <span className="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
-</button>
-{showStatusDropdown && (
-  <div className="absolute top-full left-0 mt-1 w-40 bg-surface-container-lowest rounded-lg shadow-xl border border-outline-variant/20 z-50 py-1 overflow-hidden">
-    {STATUSES.map(s => (
-      <button
-        key={s}
-        onClick={() => { setStatusFilter(s); setShowStatusDropdown(false); }}
-        className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors ${statusFilter === s ? 'bg-primary-container text-primary font-bold' : 'text-on-surface hover:bg-surface-container-low'}`}
-      >
-        {s}
-      </button>
-    ))}
-  </div>
-)}
-</div>
-
-</div>
-</div>
-<div className="col-span-12 lg:col-span-4 bg-surface-container-low p-3 sm:p-4 rounded-xl flex items-center justify-between">
-<p className="text-xs sm:text-sm text-on-surface-variant"><span className="font-bold text-on-surface">{filteredStudents.length}</span> Students found</p>
-<div className="flex gap-1">
-<button className="p-2 bg-surface-container-lowest rounded-lg">
-<span className="material-symbols-outlined" data-icon="grid_view">grid_view</span>
-</button>
-<button className="p-2 bg-primary text-on-primary rounded-lg shadow-sm">
-<span className="material-symbols-outlined" data-icon="list">list</span>
-</button>
-</div>
-</div>
-</div>
-
-<div className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10">
-<table className="w-full text-left border-collapse">
-<thead>
-<tr className="bg-surface-container-low/50">
-<th className="px-6 py-5 text-xs font-bold font-headline text-on-surface-variant uppercase tracking-widest">Student Details</th>
-<th className="px-6 py-5 text-xs font-bold font-headline text-on-surface-variant uppercase tracking-widest">Roll No.</th>
-<th className="px-6 py-5 text-xs font-bold font-headline text-on-surface-variant uppercase tracking-widest">Department</th>
-<th className="px-6 py-5 text-xs font-bold font-headline text-on-surface-variant uppercase tracking-widest">Status</th>
-<th className="px-6 py-5 text-xs font-bold font-headline text-on-surface-variant uppercase tracking-widest text-right">Actions</th>
-</tr>
-</thead>
-<tbody className="divide-y divide-surface-container">
-{filteredStudents.length === 0 && (
-  <tr><td colSpan={5} className="px-6 py-12 text-center text-on-surface-variant font-medium">No students match the selected filters.</td></tr>
-)}
-{filteredStudents.map(student => (
-<tr key={student.id} className="transition-colors group hover:bg-surface-container-low/30">
-<td className="px-6 py-4">
-<div className="flex items-center gap-4">
-  {student.imgSrc ? (
-    <img alt={student.name} className="w-10 h-10 rounded-full object-cover" src={student.imgSrc}/>
-  ) : (
-    <div className={`w-10 h-10 rounded-full ${student.avatar_bg} flex items-center justify-center ${student.avatar_text} font-bold text-sm`}>{student.initials}</div>
-  )}
-  <div>
-    <p className="font-bold text-on-surface font-headline">{student.name}</p>
-    <p className="text-xs text-on-surface-variant">{student.email}</p>
-  </div>
-</div>
-</td>
-<td className="px-6 py-4 font-label text-on-surface-variant">{student.roll_no}</td>
-<td className="px-6 py-4 text-sm text-on-surface-variant font-medium">{student.department}</td>
-<td className="px-6 py-4">
-  <span className={`text-xs font-bold px-3 py-1 rounded-full ${student.status === 'Active' ? 'bg-primary-container/30 text-primary' : 'bg-error-container/30 text-error'}`}>
-    {student.status}
-  </span>
-</td>
-<td className="px-6 py-4 text-right">
-<div className="flex justify-end gap-1">
-<button onClick={() => alert(`Viewing ${student.name}'s profile`)} className="p-2 text-on-surface-variant hover:text-primary transition-colors"><span className="material-symbols-outlined text-xl">visibility</span></button>
-<button onClick={() => alert(`Editing ${student.name}'s profile`)} className="p-2 text-on-surface-variant hover:text-primary transition-colors"><span className="material-symbols-outlined text-xl" data-icon="edit">edit</span></button>
-</div>
-</td>
-</tr>
-))}
-</tbody>
-</table>
-</div>
-
-
-{isModalOpen && (
-<div className="fixed inset-0 bg-on-surface/40 backdrop-blur-md z-[60] flex items-center justify-center p-6">
-<div className="w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transform animate-in fade-in zoom-in duration-300">
-
-<div className="px-6 py-6 sm:px-10 sm:py-8 border-b border-surface-container flex items-center justify-between">
-<div>
-<h3 className="text-2xl sm:text-3xl font-extrabold font-headline text-on-surface leading-tight">Add New Student</h3>
-<p className="text-xs sm:text-sm text-on-surface-variant font-body mt-1">Populate the fields to create a comprehensive academic profile.</p>
-</div>
-<button onClick={() => setIsModalOpen(false)} className="p-2 rounded-xl hover:bg-surface-container-low transition-colors text-on-surface-variant hover:text-on-surface">
-<span className="material-symbols-outlined text-xl sm:text-2xl" data-icon="close">close</span>
-</button>
-</div>
-
-<div className="flex-1 overflow-y-auto p-10 space-y-10 hide-scrollbar">
-
-<div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-<div className="w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0">
-<div className="w-full h-full rounded-2xl bg-primary-container/10 border-2 border-dashed border-primary/20 flex flex-col items-center justify-center text-primary relative group cursor-pointer hover:bg-primary-container/20 transition-all">
-<span className="material-symbols-outlined text-2xl sm:text-3xl mb-1" data-icon="add_a_photo">add_a_photo</span>
-<span className="text-[8px] sm:text-[9px] font-bold font-headline uppercase tracking-widest text-primary/60">Upload Image</span>
-<div className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-</div>
-</div>
-<div className="flex-1 text-center sm:text-left">
-<p className="text-xs sm:text-sm text-on-surface-variant font-body leading-relaxed">
-                            Upload a high-resolution identification photo for the student profile.
-                        </p>
-</div>
-</div>
-
-<div className="space-y-6">
-<div className="flex items-center gap-3">
-<div className="h-px flex-1 bg-surface-container"></div>
-<span className="text-[10px] font-bold font-headline text-outline tracking-widest uppercase">Personal Details</span>
-<div className="h-px flex-1 bg-surface-container"></div>
-</div>
-
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">FIRST NAME</label>
-<input 
-  name="firstName"
-  value={formData.firstName}
-  onChange={handleInputChange}
-  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
-  placeholder="e.g. John" 
-  type="text"
-/>
-</div>
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">LAST NAME</label>
-<input 
-  name="lastName"
-  value={formData.lastName}
-  onChange={handleInputChange}
-  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
-  placeholder="e.g. Doe" 
-  type="text"
-/>
-</div>
-</div>
-
-
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">INSTITUTIONAL EMAIL</label>
-<div className="relative">
-<span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-lg" data-icon="alternate_email">alternate_email</span>
-<input 
-  name="email"
-  value={formData.email}
-  onChange={handleInputChange}
-  className="w-full pl-12 pr-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
-  placeholder="j.doe@edu.curator.com" 
-  type="email"
-/>
-</div>
-</div>
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">STUDENT ID</label>
-<input 
-  name="rollNo"
-  value={formData.rollNo}
-  onChange={handleInputChange}
-  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
-  placeholder="e.g. 2024-0001" 
-  type="text"
-/>
-</div>
-</div>
-</div>
-
-<div className="space-y-6">
-<div className="flex items-center gap-3">
-<div className="h-px flex-1 bg-surface-container"></div>
-<span className="text-[10px] font-bold font-headline text-outline tracking-widest uppercase">Academic Context</span>
-<div className="h-px flex-1 bg-surface-container"></div>
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">DEPARTMENT</label>
-<div className="relative">
-<select 
-  name="department"
-  value={formData.department}
-  onChange={handleInputChange}
-  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body appearance-none"
->
-<option>Computer Science</option>
-<option>Data Science</option>
-<option>Electrical Eng.</option>
-<option>Business Admin</option>
-</select>
-<span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none" data-icon="expand_more">expand_more</span>
-</div>
-</div>
-<div className="space-y-2.5">
-<label className="text-xs font-bold font-headline text-on-surface tracking-wide px-1">SUBJECT</label>
-<input 
-  name="subject"
-  value={formData.subject}
-  onChange={handleInputChange}
-  className="w-full px-5 py-3 bg-surface-container-low border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm font-body placeholder:text-outline-variant" 
-  placeholder="e.g. Advanced AI" 
-  type="text"
-/>
-</div>
-</div>
-</div>
-</div>
-
-<div className="px-6 py-6 sm:px-10 sm:py-8 bg-surface-container-low/50 border-t border-surface-container flex flex-col sm:flex-row items-center justify-end gap-3 sm:gap-5">
-<button onClick={() => setIsModalOpen(false)} className="w-full sm:w-auto px-6 py-3 text-sm font-bold font-headline text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center gap-2">
-<span className="material-symbols-outlined text-lg" data-icon="history">history</span>
-                    Discard Changes
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[60] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="w-full max-w-2xl bg-white rounded-[32px] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden"
+            >
+              <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight">{editingStudentId ? 'Update Student' : 'New Student Entry'}</h3>
+                <button onClick={() => { setIsModalOpen(false); setEditingStudentId(null); }} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 transition-colors">
+                  <span className="material-symbols-outlined">close</span>
                 </button>
-<button disabled={isLoading} onClick={handleRegister} className={`w-full sm:w-auto px-10 py-3.5 bg-primary text-on-primary rounded-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 ${isLoading ? 'opacity-75 cursor-wait' : ''}`}>
-<span className="material-symbols-outlined text-lg" data-icon={isLoading ? "hourglass_empty" : "how_to_reg"}>{isLoading ? 'hourglass_empty' : 'how_to_reg'}</span>
-                    {isLoading ? 'Processing...' : 'Register Student'}
+              </div>
+
+              <form onSubmit={handleRegister} className="flex-1 overflow-y-auto p-10 space-y-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">First Name</label>
+                    <input name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 text-sm font-bold" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Last Name</label>
+                    <input name="lastName" value={formData.lastName} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 text-sm font-bold" required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Institution Email</label>
+                  <input name="email" value={formData.email} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 text-sm font-bold" type="email" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Student ID</label>
+                    <input name="rollNo" value={formData.rollNo} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 text-sm font-black" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Department</label>
+                    <select name="department" value={formData.department} onChange={handleInputChange} className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-primary/20 text-sm font-bold">
+                      {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-lg shadow-xl shadow-slate-200 hover:bg-primary transition-all active:scale-[0.98]">
+                  {editingStudentId ? 'Override Profile' : 'Save Connection'}
                 </button>
-</div>
-</div>
-</div>
-)}
+              </form>
+            </motion.div>
+          </div>
+        )}
 
-<div className={`fixed bottom-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 z-50 transform transition-all duration-300 ${showToast ? 'translate-y-0 opacity-100 pointer-events-auto' : 'translate-y-24 opacity-0 pointer-events-none'}`}>
-<span className="material-symbols-outlined text-primary">check_circle</span>
-<span className="text-sm font-medium">Student registered successfully.</span>
-</div>
+        {studentToDelete && (
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-6">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl">
+              <h3 className="text-xl font-black text-slate-900 mb-2 leading-tight">Remove Access?</h3>
+              <p className="text-sm text-slate-500 font-bold mb-8">This will disconnect <span className="text-slate-900 underline">{studentToDelete.name}</span> from the active registry. This cannot be undone.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setStudentToDelete(null)} className="flex-1 py-4 bg-slate-50 text-slate-900 rounded-2xl font-black text-sm hover:bg-slate-100 transition-all">Cancel</button>
+                <button onClick={handleDelete} className="flex-1 py-4 bg-red-500 text-white rounded-2xl font-black text-sm hover:bg-red-600 transition-all shadow-lg shadow-red-200">Delete</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
+      <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-4 z-[100] transition-all duration-500 ${showToast ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
+        <span className="material-symbols-outlined text-primary">check_circle</span>
+        <span className="text-sm font-black tracking-tight whitespace-nowrap">Directory has been synchronized successfully</span>
+      </div>
     </motion.div>
   );
 }

@@ -3,11 +3,12 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { attendanceService } from '../lib/attendanceService';
 
-export default function EnhancedStudentDashboardOverview() {
+export default function EnhancedStudentDashboardOverview({ isStudentView = false }: { isStudentView?: boolean }) {
   const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalStudents: 0,
     attendanceRate: 0,
+    myAttendanceCount: 0,
     recentActivity: [] as any[]
   });
 
@@ -25,6 +26,7 @@ export default function EnhancedStudentDashboardOverview() {
       setStats({
         totalStudents: studentCount || 0,
         attendanceRate: rate,
+        myAttendanceCount: attendanceData ? attendanceData.filter((a: any) => a.status === 'Present').length : 0,
         recentActivity: recentActivity || []
       });
     } catch (error) {
@@ -54,12 +56,14 @@ export default function EnhancedStudentDashboardOverview() {
       className="w-full h-full"
     >
       <div className="max-w-full mx-auto space-y-8 px-4 lg:px-6">
-        {/* Compressed Header - Minimalist approach */}
+        {/* Compressed Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/30 gap-4 sm:gap-0">
           <div className="flex items-center gap-5">
             <div className="w-1.5 h-10 bg-primary rounded-full shadow-lg shadow-primary/20"></div>
             <div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-[-0.03em] text-slate-900 leading-none mb-1.5 font-headline">Overview</h2>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-[-0.03em] text-slate-900 leading-none mb-1.5 font-headline">
+                {isStudentView ? 'Student Portal Overview' : 'Administrative Overview'}
+              </h2>
               <p className="text-slate-400 font-bold text-[10px] sm:text-xs uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1 h-1 bg-primary rounded-full"></span>
                 {formatDate()}
@@ -68,15 +72,14 @@ export default function EnhancedStudentDashboardOverview() {
           </div>
         </div>
 
-        {/* Proportional Metrics - No Scale Hacks */}
+        {/* Proportional Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          {/* Main Attendance Card - 7/12 for focus */}
+          {/* Attendance Rate Card */}
           <div className="md:col-span-7 group relative bg-primary p-8 rounded-[32px] text-white shadow-2xl shadow-primary/30 hover:shadow-primary/40 transition-all duration-500 hover:-translate-y-1 overflow-hidden flex flex-col justify-between min-h-[220px]">
             <div className="flex justify-between items-start relative z-10">
               <div className="w-14 h-14 flex items-center justify-center bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 group-hover:scale-110 transition-transform duration-500 shadow-xl">
                 <span className="material-symbols-outlined text-3xl text-white">how_to_reg</span>
               </div>
-
             </div>
 
             <div className="mt-8 relative z-10">
@@ -91,39 +94,30 @@ export default function EnhancedStudentDashboardOverview() {
                 ></motion.div>
               </div>
             </div>
-            <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] pointer-events-none"></div>
           </div>
 
-          {/* Student Status Card - 5/12 for split */}
+          {/* Student Count Card */}
           <div className="md:col-span-5 group relative bg-white p-8 rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-100/50 hover:shadow-primary/10 transition-all duration-500 hover:-translate-y-1 overflow-hidden flex flex-col justify-between min-h-[220px]">
             <div className="flex justify-between items-start relative z-10">
               <div className="w-14 h-14 flex items-center justify-center bg-primary-container text-primary rounded-2xl shadow-inner group-hover:scale-110 transition-transform duration-500">
                 <span className="material-symbols-outlined text-2xl">groups</span>
               </div>
-
             </div>
             <div className="mt-auto relative z-10">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] opacity-80 mb-1">Total Active Students</p>
               <h3 className="text-5xl font-black text-slate-900 leading-none tracking-[-0.04em] group-hover:text-primary transition-colors duration-500 mb-2">{stats.totalStudents.toLocaleString()}</h3>
-
-            </div>
-            <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.05] group-hover:scale-110 transition-all duration-1000">
-              <span className="material-symbols-outlined text-[180px]">groups</span>
             </div>
           </div>
         </div>
 
-        {/* Dense Activity Grid - Optimized Spacing */}
+        {/* Activity Stream */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Recent Activity Section */}
-          <div className="lg:col-span-8 space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 flex items-center justify-center bg-slate-900 text-white rounded-xl shadow-lg shadow-slate-200">
-                  <span className="material-symbols-outlined text-sm">history_edu</span>
-                </div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">Recent Activity Stream</h3>
+          <div className="lg:col-span-12 space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 flex items-center justify-center bg-slate-900 text-white rounded-xl shadow-lg shadow-slate-200">
+                <span className="material-symbols-outlined text-sm">history_edu</span>
               </div>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">Real-time Activity Stream</h3>
             </div>
 
             <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl shadow-slate-100/50 overflow-hidden divide-y divide-slate-50">
@@ -158,38 +152,6 @@ export default function EnhancedStudentDashboardOverview() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* High Intensity Actions Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
-            <h3 className="text-xl font-black text-slate-900 tracking-tight px-2 flex items-center gap-2">
-              <span className="w-1 h-5 bg-primary rounded-full"></span>
-              Administrative Tasks
-            </h3>
-            <div className="space-y-4">
-              {[
-                { name: 'Mark Attendance', icon: 'qr_code_scanner', sub: 'QUICK SCAN ACCESS', path: '/mark-attendance' },
-                { name: 'Add New Student', icon: 'person_add', sub: 'ENROLLMENT PORTAL', path: '/add-student' },
-                { name: 'System Reports', icon: 'analytics', sub: 'DATA OVERVIEW', path: '/reports' },
-              ].map((action, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => navigate(action.path)}
-                  className="w-full flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[24px] shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 group active:scale-[0.98]"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 flex items-center justify-center bg-slate-50 text-slate-400 rounded-xl group-hover:bg-primary group-hover:text-white transition-all shadow-inner border border-slate-50">
-                      <span className="material-symbols-outlined text-[24px]">{action.icon}</span>
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-black text-slate-900 leading-none mb-1">{action.name}</p>
-                      <p className="text-[9px] text-slate-400 uppercase font-black tracking-widest leading-none">{action.sub}</p>
-                    </div>
-                  </div>
-                  <span className="material-symbols-outlined text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
-                </button>
-              ))}
             </div>
           </div>
         </div>
